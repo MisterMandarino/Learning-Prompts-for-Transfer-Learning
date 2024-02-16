@@ -34,7 +34,7 @@ Further details here [project paper](CV_Report.pdf).
 
 ## UMAP
 ![](img/umap.png)
-*UMAP of the CLIP embedding space. The learned textual prompts representations are closer to the visual representation respect to the zero-shot textual representations ('a photo of a <class>')*
+*UMAP of the CLIP embedding space. The learned textual prompts representations are closer to the visual representation respect to the zero-shot textual representations ('a photo of a [class]')*
 
 ## Dependencies
 The project is written in Python 3.11. The required packages are listed in the [requirements](requirements.txt) file.

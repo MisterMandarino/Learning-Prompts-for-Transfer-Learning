@@ -6,31 +6,44 @@ from utils.train import train, save_model
 from utils.CLIP_zs import *
 from utils.plot import *
 
+import argparse
 import os
 HOME = os.getcwd()
 WEIGHTS_PATH = os.path.join(HOME, 'weights')
 
-## Load CLIP
-clip_model, preprocess = clip.load("ViT-B/32")
-#clip_model, preprocess = clip.load("RN50")
-clip_model.to(device)
+# Create the parser
+parser = argparse.ArgumentParser()
+parser.add_argument('-e', '--EPOCHS', type=int, required=True, default=5, help='The number of epochs for training the model')
+parser.add_argument('-b', '--BATCH_SIZE', type=int, required=True, default=32, help='batch size of the dataloader')
+args = parser.parse_args()
 
+# Data check
+if args.EPOCHS <= 0:
+    parser.error("--EPOCHS must be greater than zero.")
+    
+if args.BATCH_SIZE <= 0:
+    parser.error("--BATCH_SIZE must be greater than zero.")
+
+## Define constants
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 DATASETS = ['cifar10', 'cifar100', 'food101', 'oxford pets', 'mnist']
+NUM_EPOCHS = args.EPOCHS
+BATCH = args.BATCH_SIZE
 
-# Set number of epochs
-NUM_EPOCHS = 5
+## Load CLIP
+clip_model, preprocess = clip.load("ViT-B/32")
+clip_model.to(device)
 
 # Set random seeds
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
 
 ## Get Datasets ##
-cifar10_train_loader, cifar10_test_loader, cifar10_mapper = get_Cifar_10_dataset(32, install=True)
-cifar100_train_loader, cifar100_test_loader, cifar100_mapper = get_Cifar_100_dataset(32, install=True)
-food101_train_loader, food101_test_loader, food101_mapper = get_food_101_dataset(32, install=True)
-pets_train_loader, pets_test_loader, pets_mapper = get_oxford_pet_dataset(32, install=True)
-mnist_train_loader, mnist_test_loader, mnist_mapper = get_MNIST_dataset(32, install=True)
+cifar10_train_loader, cifar10_test_loader, cifar10_mapper = get_Cifar_10_dataset(BATCH, install=True)
+cifar100_train_loader, cifar100_test_loader, cifar100_mapper = get_Cifar_100_dataset(BATCH, install=True)
+food101_train_loader, food101_test_loader, food101_mapper = get_food_101_dataset(BATCH, install=True)
+pets_train_loader, pets_test_loader, pets_mapper = get_oxford_pet_dataset(BATCH, install=True)
+mnist_train_loader, mnist_test_loader, mnist_mapper = get_MNIST_dataset(BATCH, install=True)
 
 classes_dict = {}
 results_zero_shot = {}
